@@ -1,6 +1,8 @@
 class ItemsController < ApplicationController
+  before_action :authenticate_user!, only: [:edit, :new]
   before_action :set_item, only: [:show, :edit, :update, :destroy]
   before_action :check_view_access, only: [:show]
+  before_action :check_edit_access, only: [:edit]
 
   def index
     @my_items = Item.owned_by current_user
@@ -11,6 +13,7 @@ class ItemsController < ApplicationController
   end
 
   def new
+    @item = Item.new
   end
 
   def edit
@@ -26,5 +29,9 @@ class ItemsController < ApplicationController
 
     def check_view_access
       forbidden unless @item.can_view? current_user
+    end
+
+    def check_edit_access
+      forbidden unless @item.can_edit? current_user
     end
 end
