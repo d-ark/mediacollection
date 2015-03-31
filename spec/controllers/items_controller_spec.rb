@@ -55,6 +55,20 @@ RSpec.describe ItemsController, type: :controller do
         expect(response).to render_template :show
       end
     end
+
+    describe "GET #new" do
+      it "redirects to sign in page" do
+        get :new
+        expect(response).to redirect_to '/users/sign_in'
+      end
+    end
+
+    describe "GET #edit" do
+      it "redirects to sign in page" do
+        get :edit, id: "any_id"
+        expect(response).to redirect_to '/users/sign_in'
+      end
+    end
   end
 
   context 'user signed in' do
@@ -98,7 +112,7 @@ RSpec.describe ItemsController, type: :controller do
         expect(response).to have_http_status(:not_found)
       end
 
-      it "returns 403 page if not public for signed in users" do
+      it "returns 403 page if not public" do
         item.update public: false, user: find_or_create(:bob)
         get :show, id: item.id
         expect(response).to have_http_status(:forbidden)
@@ -114,5 +128,57 @@ RSpec.describe ItemsController, type: :controller do
         expect(response).to render_template :show
       end
     end
+
+    describe "GET #new" do
+      it "returns http success" do
+        get :new
+        expect(response).to have_http_status(:success)
+      end
+      it 'populates a new item' do
+        get :new
+        expect(assigns :item).to be_new_record
+      end
+      it 'renders new template' do
+        get :new
+        expect(response).to render_template :new
+      end
+    end
+
+    describe "GET #edit" do
+      let(:item) {create(:image, public: false, user: find_or_create(:alice))}
+
+      it "returns http success" do
+        get :edit, id: item.id
+        expect(response).to have_http_status(:success)
+      end
+
+      it "returns 404 page if not exist" do
+        get :edit, id: "la_la_la"
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "returns 403 page if not public" do
+        item.update public: false, user: find_or_create(:bob)
+        get :edit, id: item.id
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it "returns 403 page if not owned by current user" do
+        item.update public: true, user: find_or_create(:bob)
+        get :edit, id: item.id
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it 'populates an item' do
+        get :edit, id: item.id
+        expect(assigns :item).to eq(item)
+      end
+
+      it 'renders edit template' do
+        get :edit, id: item.id
+        expect(response).to render_template :edit
+      end
+    end
+
   end
 end
