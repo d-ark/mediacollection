@@ -6,11 +6,11 @@ class Item < ActiveRecord::Base
   validates :kind, inclusion: {in: ALLOWED_MEDIA_TYPES}
 
   scope :published, -> { where public: true }
-  scope :owned_by, -> (user) { where(user_id: user.id) }
-  scope :opened_for, -> (user) { where("user_id = ? or public = ?", user.id, true) }
+  scope :owned_by, -> (_user) { where(user_id: _user.id) }
+  scope :opened_for, -> (_user) { where("user_id = ? or public = ?", _user.id, true) }
 
   def can_edit? _user
-    _user.id == user_id
+    _user.try(:id) == user_id
   end
 
   def can_view? _user

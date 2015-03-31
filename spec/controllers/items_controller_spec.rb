@@ -21,11 +21,22 @@ RSpec.describe ItemsController, type: :controller do
   end
 
   describe "GET #show" do
-    let(:item) {create(:image)}
+    let(:item) {create(:image, public: true)}
 
     it "returns http success" do
       get :show, id: item.id
       expect(response).to have_http_status(:success)
+    end
+
+    it "returns 404 page if not exist" do
+      get :show, id: "la_la_la"
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "returns 403 page if not public" do
+      item.update public: false
+      get :show, id: item.id
+      expect(response).to have_http_status(:forbidden)
     end
 
     it 'populates an array of items' do
