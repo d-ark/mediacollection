@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe ItemsController, type: :controller do
-  context 'user not signed in' do
+  context 'when not signed in' do
     describe "GET #index" do
       it "returns http success" do
         get :index
@@ -69,9 +69,16 @@ RSpec.describe ItemsController, type: :controller do
         expect(response).to redirect_to '/users/sign_in'
       end
     end
+
+    describe "POST #create" do
+      it "redirects to sign in page" do
+        post :create
+        expect(response).to redirect_to '/users/sign_in'
+      end
+    end
   end
 
-  context 'user signed in' do
+  context 'when signed in' do
     before { sign_in find_or_create :alice }
 
     describe "GET #index" do
@@ -180,5 +187,31 @@ RSpec.describe ItemsController, type: :controller do
       end
     end
 
+    describe "POST #create" do
+
+      it "renders :new when data is not valid" do
+        post :create, item: {title: ''}
+        expect(response).to render_template :new
+      end
+
+      it "saves record when data is valid" do
+        post :create, item: attributes_for(:image)
+        item = assigns :item
+        expect(item).not_to be_new_record
+      end
+
+      it "redirects to show page when data is valid" do
+        post :create, item: attributes_for(:image)
+        item = assigns :item
+        expect(response).to redirect_to "/items/#{item.id}"
+      end
+
+      it "saves record with current_user id" do
+        post :create, item: attributes_for(:image, user: find_or_create(:bob))
+        item = assigns :item
+        expect(item.user_id).to eq(find_or_create(:alice).id)
+      end
+
+    end
   end
 end
