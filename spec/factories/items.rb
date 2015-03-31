@@ -5,6 +5,7 @@ FactoryGirl.define do
     link "http://www.lindemanns-hotel.de/flashgallery/71599f3d-f89a-4b22-9c80-d3c3223a834d/d573960c-9606-4aec-b149-be273d975da7.jpg"
     kind "image"
     public true
+    user_id { find_or_create(:alice).id }
   end
 
   factory :video, class: Item do
@@ -13,6 +14,7 @@ FactoryGirl.define do
     link "https://youtu.be/retX8Wj7JdM"
     kind "video"
     public false
+    user_id { find_or_create(:alice).id }
   end
 
 end
