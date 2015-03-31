@@ -35,6 +35,7 @@ gem 'slim-rails'
 gem 'bootstrap-sass'
 
 gem 'devise'
+gem 'devise-bootstrap-views'
 
 group :development, :test do
   gem 'sqlite3'
