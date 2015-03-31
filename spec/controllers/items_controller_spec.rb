@@ -19,6 +19,17 @@ RSpec.describe ItemsController, type: :controller do
         expect(assigns :public_items).to eq(public_items)
       end
 
+      it 'populates an array of items that match query' do
+        public_items = [
+          create(:image, public: true, user: find_or_create(:bob)),
+        ]
+        create(:video, public: true, user: find_or_create(:alice))
+
+        get :index, q: 'berlin'
+        expect(assigns :my_items).to eq([])
+        expect(assigns :public_items).to eq(public_items)
+      end
+
       it 'renders index template' do
         get :index
         expect(response).to render_template :index
@@ -110,6 +121,17 @@ RSpec.describe ItemsController, type: :controller do
         create(:image, public: false, user: find_or_create(:bob))
 
         get :index
+        expect(assigns :my_items).to eq(my_items)
+        expect(assigns :public_items).to eq(public_items)
+      end
+
+      it 'populates an array of items that match query' do
+        public_items = [create(:image, public: true, user: find_or_create(:bob))]
+        my_items = [create(:image, public: true, user: find_or_create(:alice))]
+        create(:video, public: false, user: find_or_create(:alice))
+        create(:image, public: false, user: find_or_create(:bob))
+
+        get :index, q: 'berlin'
         expect(assigns :my_items).to eq(my_items)
         expect(assigns :public_items).to eq(public_items)
       end

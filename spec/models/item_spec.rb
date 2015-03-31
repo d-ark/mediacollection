@@ -26,11 +26,26 @@ RSpec.describe Item, type: :model do
     expect(Item.owned_by(find_or_create(:bob))).to eq bobs_items
   end
 
+  it('returns list of user\'s items for owned_by scope') do
+    alice_items = [create(:video, user: find_or_create(:alice))]
+    create(:image, user: find_or_create(:bob))
+    expect(Item.foreign_for(find_or_create(:bob))).to eq alice_items
+  end
+
   it('returns list of public items + own items for opened_for scope') do
     create(:video, user: find_or_create(:alice), public: false)
     public_items = [create(:video, user: find_or_create(:alice), public: true)]
     bobs_items =   [create(:image, user: find_or_create(:bob))]
     expect(Item.opened_for find_or_create(:bob)).to eq public_items + bobs_items
+  end
+
+  it('returns list of items found by description or title') do
+    searched_items = [
+      create(:video, description: 'streets of Berlin in winter'),
+      create(:image, title: 'BERLIN IS THE CAPITAL OF GERMANY')
+    ]
+    create(:video, description: 'nothing...')
+    expect(Item.search 'berlin').to eq searched_items
   end
 
   it('allows to view for public foreign item') do

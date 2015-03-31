@@ -3,10 +3,11 @@ class ItemsController < ApplicationController
   before_action :set_item, only: [:show, :edit, :update, :destroy]
   before_action :check_edit_access, only: [:edit, :update, :destroy]
   before_action :check_view_access, only: [:show]
+  before_action :set_items, only: :index
+  before_action :add_search_query, only: :index
+
 
   def index
-    @my_items = Item.owned_by current_user
-    @public_items = Item.published - @my_items
   end
 
   def show
@@ -60,5 +61,17 @@ class ItemsController < ApplicationController
     def item_params
       params.require(:item).permit(:title, :description, :kind, :link, :public)
             .merge(user_id: current_user.id)
+    end
+
+    def set_items
+      @my_items = Item.owned_by current_user
+      @public_items = Item.published.foreign_for current_user
+    end
+
+    def add_search_query
+      if params[:q]
+        @my_items = @my_items.search params[:q]
+        @public_items = @public_items.search params[:q]
+      end
     end
 end
