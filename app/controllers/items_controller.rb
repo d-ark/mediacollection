@@ -1,8 +1,8 @@
 class ItemsController < ApplicationController
   before_action :authenticate_user!, only: [:edit, :new, :create, :update, :destroy]
   before_action :set_item, only: [:show, :edit, :update, :destroy]
+  before_action :check_edit_access, only: [:edit, :update, :destroy]
   before_action :check_view_access, only: [:show]
-  before_action :check_edit_access, only: [:edit]
 
   def index
     @my_items = Item.owned_by current_user
@@ -29,6 +29,11 @@ class ItemsController < ApplicationController
   end
 
   def update
+    if @item.update item_params
+      redirect_to item_path(@item)
+    else
+      render :edit
+    end
   end
 
   def destroy

@@ -76,6 +76,20 @@ RSpec.describe ItemsController, type: :controller do
         expect(response).to redirect_to '/users/sign_in'
       end
     end
+
+    describe "POST #update" do
+      it "redirects to sign in page" do
+        post :create
+        expect(response).to redirect_to '/users/sign_in'
+      end
+    end
+
+    describe "POST #destroy" do
+      it "redirects to sign in page" do
+        post :create
+        expect(response).to redirect_to '/users/sign_in'
+      end
+    end
   end
 
   context 'when signed in' do
@@ -188,7 +202,6 @@ RSpec.describe ItemsController, type: :controller do
     end
 
     describe "POST #create" do
-
       it "renders :new when data is not valid" do
         post :create, item: {title: ''}
         expect(response).to render_template :new
@@ -211,7 +224,50 @@ RSpec.describe ItemsController, type: :controller do
         item = assigns :item
         expect(item.user_id).to eq(find_or_create(:alice).id)
       end
+    end
 
+    describe "POST #update" do
+      let(:item) {create(:image, public: false, user: find_or_create(:alice))}
+
+      it "returns 404 page if not exist" do
+        post :update, id: "la_la_la"
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "returns 403 page if not public" do
+        item.update public: false, user: find_or_create(:bob)
+        post :update, id: item.id
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it "returns 403 page if not owned by current user" do
+        item.update public: true, user: find_or_create(:bob)
+        post :update, id: item.id
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it "renders :edit when data is not valid" do
+        post :update, id: item.id, item: {title: ''}
+        expect(response).to render_template :edit
+      end
+
+      it "saves record when data is valid" do
+        post :update, id: item.id, item: attributes_for(:image)
+        item = assigns :item
+        expect(item).not_to be_new_record
+      end
+
+      it "redirects to show page when data is valid" do
+        post :update, id: item.id, item: attributes_for(:image)
+        item = assigns :item
+        expect(response).to redirect_to "/items/#{item.id}"
+      end
+
+      it "saves record with current_user id" do
+        post :update, id: item.id, item: attributes_for(:image, user: find_or_create(:bob))
+        item = assigns :item
+        expect(item.user_id).to eq(find_or_create(:alice).id)
+      end
     end
   end
 end
