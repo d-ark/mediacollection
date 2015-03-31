@@ -20,4 +20,15 @@ class Item < ActiveRecord::Base
     can_edit?(_user) || public
   end
 
+  def iframe_link
+    return unless kind == 'video'
+    youtube_id = link.gsub(Regexp.new('http(s){,1}:\/\/'), '')
+    if youtube_id.starts_with? 'youtu.be'
+      youtube_id.gsub!('youtu.be', '').gsub!('/', '')
+    else
+      youtube_id = youtube_id.match(/(\?|&)v=(\w)+/)[0][3..10000]
+    end
+    "http://www.youtube.com/embed/#{youtube_id}"
+  end
+
 end

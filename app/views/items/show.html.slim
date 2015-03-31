@@ -12,9 +12,9 @@ p Uploaded by #{@item.user.email}
 = link_to 'Back to list', items_path
 hr
 - if @item.kind.to_s == 'video'
-  = link_to 'Watch on youtube', @item.link
+  = link_to 'Watch on youtube', @item.link, target: "_blank"
   br
-  iframe width="420" height="315" src=@item.link
+  iframe width="854" height="510" src=@item.iframe_link
 
 - elsif @item.kind.to_s == 'image'
   img src=@item.link width='100%'

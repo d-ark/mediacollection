@@ -87,4 +87,14 @@ RSpec.describe Item, type: :model do
     item = create(:video, user: find_or_create(:bob), public: false)
     expect(item.can_edit? find_or_create(:bob)).to be
   end
+
+  it('returns youtube link for iframe for full link') do
+    item = create(:video, link: 'https://www.youtube.com/watch?v=WaAu4L2cl4c')
+    expect(item.iframe_link).to eq 'http://www.youtube.com/embed/WaAu4L2cl4c'
+  end
+
+  it('returns youtube link for iframe for short link') do
+    item = create(:video, link: 'https://youtu.be/WaAu4L2cl4c')
+    expect(item.iframe_link).to eq 'http://www.youtube.com/embed/WaAu4L2cl4c'
+  end
 end
