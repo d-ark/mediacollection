@@ -4,6 +4,7 @@ FactoryGirl.define do
     description "The photo of main street of Berlin"
     link "http://www.lindemanns-hotel.de/flashgallery/71599f3d-f89a-4b22-9c80-d3c3223a834d/d573960c-9606-4aec-b149-be273d975da7.jpg"
     kind "image"
+    public true
   end
 
   factory :video, class: Item do
@@ -11,6 +12,7 @@ FactoryGirl.define do
     description "The video from Atlanic ocean"
     link "https://youtu.be/retX8Wj7JdM"
     kind "video"
+    public false
   end
 
 end
