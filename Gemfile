@@ -36,6 +36,7 @@ gem 'bootstrap-sass'
 
 gem 'devise'
 gem 'devise-bootstrap-views'
+gem 'bootstrap_form'
 
 group :development, :test do
   gem 'sqlite3'

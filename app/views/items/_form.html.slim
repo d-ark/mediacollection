@@ -1,0 +1,9 @@
+.row
+  .col-sm-12.col-md-6
+    = bootstrap_form_for(@item) do |f|
+      = f.text_field :title
+      = f.text_area :description
+      = f.check_box :public
+      = f.select :kind, Item::ALLOWED_MEDIA_TYPES
+      = f.text_field :link
+      = f.submit "Save", class: 'btn btn-success'
