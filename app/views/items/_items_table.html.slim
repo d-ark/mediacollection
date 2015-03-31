@@ -15,9 +15,10 @@
         td = item.title
         td.text-right
           = link_to 'View', item, class: 'btn btn-primary'
-          | &nbsp;
-          = link_to 'Edit', edit_item_path(item), class: 'btn btn-warning'
-          | &nbsp;
-          = link_to 'Remove', item, method: :delete, data: {confirm: 'Are you sure?'}, class: 'btn btn-danger'
+          - if item.can_edit? current_user
+            | &nbsp;
+            = link_to 'Edit', edit_item_path(item), class: 'btn btn-warning'
+            | &nbsp;
+            = link_to 'Remove', item, method: :delete, data: {confirm: 'Are you sure?'}, class: 'btn btn-danger'
 - else
   p Nothing to display...

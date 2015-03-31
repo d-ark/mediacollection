@@ -1,2 +1,18 @@
-h1 Items#show
-p Find me in app/views/items/show.html.slim
+h1 = @item.title
+p = @item.description
+hr
+p Uploaded by #{@item.user.email}
+
+- if @item.can_edit? current_user
+  = link_to 'Edit', edit_item_path(@item), class: 'btn btn-warning'
+  | &nbsp;
+  = link_to 'Remove', @item, method: :delete, data: {confirm: 'Are you sure?'}, class: 'btn btn-danger'
+  hr
+
+= link_to 'Back to list', items_path
+hr
+- if @item.kind.to_s == 'video'
+  iframe width="420" height="315" src=@item.link
+
+- elsif @item.kind.to_s == 'image'
+  img src=@item.link width='100%'
