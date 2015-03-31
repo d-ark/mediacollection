@@ -1,0 +1,23 @@
+- if items.any?
+  table.table.table-stripped
+    - items.each do |item|
+      tr
+        td
+          - if item.kind.to_s == 'video'
+            span.glyphicon.glyphicon-film.green
+          - elsif item.kind.to_s == 'image'
+            span.glyphicon.glyphicon-picture.green
+        td
+          - if item.public
+            span.glyphicon.glyphicon-eye-open.green
+          - else
+            span.glyphicon.glyphicon-eye-close
+        td = item.title
+        td.text-right
+          = link_to 'View', item, class: 'btn btn-primary'
+          | &nbsp;
+          = link_to 'Edit', edit_item_path(item), class: 'btn btn-warning'
+          | &nbsp;
+          = link_to 'Remove', item, method: :delete, data: {confirm: 'Are you sure?'}, class: 'btn btn-danger'
+- else
+  p Nothing to display...
