@@ -11,15 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150331162710) do
+ActiveRecord::Schema.define(version: 20150331164826) do
 
   create_table "items", force: :cascade do |t|
     t.string   "title"
     t.text     "description"
     t.string   "link"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
     t.string   "kind"
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.boolean  "public",      default: false, null: false
   end
 
 end
